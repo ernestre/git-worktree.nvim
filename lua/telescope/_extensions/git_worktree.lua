@@ -76,15 +76,14 @@ local delete_worktree = function(prompt_bufnr)
     local worktree_path = get_worktree_path(prompt_bufnr)
     actions.close(prompt_bufnr)
     if worktree_path ~= nil then
-       git_worktree.delete_worktree(worktree_path, force_next_deletion, {
-           on_failure = delete_failure_handler,
-           on_success = delete_success_handler
-       })
+        git_worktree.delete_worktree(worktree_path, force_next_deletion, {
+            on_failure = delete_failure_handler,
+            on_success = delete_success_handler
+        })
     end
 end
 
 local create_input_prompt = function(cb)
-
     --[[
     local window = Window.centered({
         width = 30,
@@ -143,7 +142,7 @@ end
 
 local telescope_git_worktree = function(opts)
     opts = opts or {}
-    local output = utils.get_os_command_output({"git", "worktree", "list"})
+    local output = utils.get_os_command_output({ "git", "worktree", "list" })
     local results = {}
     local widths = {
         path = 0,
@@ -193,9 +192,10 @@ local telescope_git_worktree = function(opts)
     }
 
     local make_display = function(entry)
+        local path, _ = utils.transform_path(opts, entry.path)
         return displayer {
             { entry.branch, "TelescopeResultsIdentifier" },
-            { utils.transform_path(opts, entry.path) },
+            { path },
             { entry.sha },
         }
     end
@@ -226,7 +226,7 @@ local telescope_git_worktree = function(opts)
 end
 
 return require("telescope").register_extension(
-           {
+    {
         exports = {
             git_worktree = telescope_git_worktree,
             git_worktrees = telescope_git_worktree,
